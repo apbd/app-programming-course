@@ -4,14 +4,15 @@ from flask_restful import Api
 
 from config import Config
 from extensions import db
-
-from resources.user import UserListResource
+from models.user import User
 from resources.blog import RecipeListResource, RecipeResource, RecipePublishResource
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    app.app_context().push()
 
     register_extensions(app)
     register_resources(app)
@@ -27,7 +28,6 @@ def register_extensions(app):
 def register_resources(app):
     api = Api(app)
 
-    api.add_resource(UserListResource, '/users')
     api.add_resource(RecipeListResource, '/recipes')
     api.add_resource(RecipeResource, '/recipes/<int:recipe_id>')
     api.add_resource(RecipePublishResource, '/recipes/<int:recipe_id>/publish')
