@@ -11,6 +11,8 @@ class Recipe(db.Model):
     cook_time = db.Column(db.Integer)
     directions = db.Column(db.String(1000))
     is_publish = db.Column(db.Boolean(), default=False)
+    cover_image = db.Column(db.String(100), default=None)
+
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
 
@@ -19,6 +21,17 @@ class Recipe(db.Model):
     @classmethod
     def get_all_published(cls):
         return cls.query.filter_by(is_publish=True).all()
+
+    @classmethod
+    def get_all_by_user(cls, user_id, visibility='public'):
+        if visibility == 'public':
+            return cls.query.filter_by(user_id=user_id, is_publish=True).all()
+
+        elif visibility == 'private':
+            return cls.query.filter_by(user_id=user_id, is_publish=False).all()
+
+        else:
+            return cls.query.filter_by(user_id=user_id).all()
 
     @classmethod
     def get_by_id(cls, recipe_id):
