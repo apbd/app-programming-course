@@ -11,6 +11,8 @@ class Recipe(db.Model):
     cook_time = db.Column(db.Integer)
     directions = db.Column(db.String(1000))
     is_publish = db.Column(db.Boolean(), default=False)
+    cover_image = db.Column(db.String(100), default=None)
+
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
 
