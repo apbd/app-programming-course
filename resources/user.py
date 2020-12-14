@@ -55,7 +55,7 @@ class UserListResource(Resource):
                        token=token,
                        _external=True)
 
-        text = 'Hi, Thanks for using SmileCook! Please confirm your registration by clicking on the link: {}'.format(link)
+        text = 'Welcome to General Blog! Please use this link to confirm your registration: {}'.format(link)
 
         mailgun.send_email(to=user.email,
                            subject=subject,
