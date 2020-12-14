@@ -11,10 +11,19 @@ from resources.user import UserListResource, UserResource, MeResource, UserRecip
 from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
 from resources.blog import RecipeListResource, RecipeResource, RecipePublishResource, RecipeCoverUploadResource
 
+import os
 
 def create_app():
+
+    env = os.environ.get('ENV', 'Development')
+    if env == 'Production':
+        config_str = 'config.ProductionConfig'
+    elif env == 'Staging':
+        config_str = 'config.StagingConfig'
+    else:
+        config_str = 'config.DevelopmentConfig'
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config_str)
 
     app.app_context().push()
 
@@ -22,7 +31,6 @@ def create_app():
     register_resources(app)
 
     return app
-
 
 def register_extensions(app):
     db.init_app(app)
@@ -61,3 +69,4 @@ def register_resources(app):
 if __name__ == '__main__':
     app = create_app()
     app.run()
+
