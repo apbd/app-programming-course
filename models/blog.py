@@ -5,11 +5,10 @@ class Recipe(db.Model):
     __tablename__ = 'recipe'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(200))
-    num_of_servings = db.Column(db.Integer)
-    cook_time = db.Column(db.Integer)
-    directions = db.Column(db.String(1000))
+    blog_title = db.Column(db.String(100), nullable=False)
+    blog_status = db.Column(db.String(700))
+    author = db.Column(db.String(100))
+    rating = db.Column(db.Integer)
     is_publish = db.Column(db.Boolean(), default=False)
     cover_image = db.Column(db.String(100), default=None)
 

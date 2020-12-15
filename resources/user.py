@@ -48,9 +48,7 @@ class UserListResource(Resource):
         user.save()
 
         token = generate_token(user.email, salt='activate')
-
         subject = 'Please confirm your registration.'
-
         link = url_for('useractivateresource',
                        token=token,
                        _external=True)

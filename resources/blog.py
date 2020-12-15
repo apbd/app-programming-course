@@ -81,11 +81,10 @@ class RecipeResource(Resource):
         if current_user != recipe.user_id:
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
-        recipe.name = data.get('name') or recipe.name
-        recipe.description = data.get('description') or recipe.description
-        recipe.num_of_servings = data.get('num_of_servings') or recipe.num_of_servings
-        recipe.cook_time = data.get('cook_time') or recipe.cook_time
-        recipe.directions = data.get('directions') or recipe.directions
+        recipe.blog_title = data.get('blog_title') or recipe.blog_title
+        recipe.blog_status = data.get('blog_status') or recipe.blog_status
+        recipe.rating = data.get('rating') or recipe.rating
+        recipe.author = data.get('author') or recipe.author
 
         recipe.save()
 
