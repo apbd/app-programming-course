@@ -4,7 +4,11 @@ from marshmallow import Schema, fields, post_dump, validate, validates, Validati
 from schemas.user import UserSchema
 
 
-
+def validate_rating(n):
+    if n < 1:
+        raise ValidationError('Rating must be greater than 0.')
+    if n > 10:
+        raise ValidationError('Rating must not be greater than 10.')
 
 
 class BlogSchema(Schema):
@@ -30,12 +34,7 @@ class BlogSchema(Schema):
             return {'data': data}
         return data
 
-    @validates('rating')
-    def validate_rating(self, n):
-        if n < 1:
-            raise ValidationError('Rating must be greater than 0.')
-        if n > 10:
-            raise ValidationError('Rating must not be greater than 10.')
+
 
     def dump_cover_url(self, blog):
         if blog.cover_image:
