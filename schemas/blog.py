@@ -7,7 +7,7 @@ from schemas.user import UserSchema
 
 
 
-class RecipeSchema(Schema):
+class BlogSchema(Schema):
     class Meta:
         ordered = True
 
@@ -37,8 +37,8 @@ class RecipeSchema(Schema):
         if n > 10:
             raise ValidationError('Rating must not be greater than 10.')
 
-    def dump_cover_url(self, recipe):
-        if recipe.cover_image:
-            return url_for('static', filename='images/recipes/{}'.format(recipe.cover_image), _external=True)
+    def dump_cover_url(self, blog):
+        if blog.cover_image:
+            return url_for('static', filename='images/blogs/{}'.format(blog.cover_image), _external=True)
         else:
             return url_for('static', filename='images/assets/default-blog-cover.jpg', _external=True)

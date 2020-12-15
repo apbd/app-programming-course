@@ -7,9 +7,9 @@ from config import Config
 from extensions import db, jwt, image_set
 
 
-from resources.user import UserListResource, UserResource, MeResource, UserRecipeListResource, UserActivateResource, UserAvatarUploadResource
+from resources.user import UserListResource, UserResource, MeResource, UserBlogListResource, UserActivateResource, UserAvatarUploadResource
 from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
-from resources.blog import RecipeListResource, RecipeResource, RecipePublishResource, RecipeCoverUploadResource
+from resources.blog import BlogListResource, BlogResource, BlogPublishResource, BlogCoverUploadResource
 
 
 def create_app():
@@ -44,7 +44,7 @@ def register_resources(app):
     api.add_resource(UserActivateResource, '/users/activate/<string:token>')
     api.add_resource(UserResource, '/users/<string:username>')
     api.add_resource(UserAvatarUploadResource, '/users/avatar')
-    api.add_resource(UserRecipeListResource, '/users/<string:username>/recipes')
+    api.add_resource(UserBlogListResource, '/users/<string:username>/blogs')
 
     api.add_resource(MeResource, '/me')
 
@@ -52,10 +52,10 @@ def register_resources(app):
     api.add_resource(RefreshResource, '/refresh')
     api.add_resource(RevokeResource, '/revoke')
 
-    api.add_resource(RecipeListResource, '/recipes')
-    api.add_resource(RecipeResource, '/recipes/<int:recipe_id>')
-    api.add_resource(RecipePublishResource, '/recipes/<int:recipe_id>/publish')
-    api.add_resource(RecipeCoverUploadResource, '/recipes/<int:recipe_id>/cover')
+    api.add_resource(BlogListResource, '/blogs')
+    api.add_resource(BlogResource, '/blogs/<int:blog_id>')
+    api.add_resource(BlogPublishResource, '/blogs/<int:blog_id>/publish')
+    api.add_resource(BlogCoverUploadResource, '/blogs/<int:blog_id>/cover')
 
 
 if __name__ == '__main__':
