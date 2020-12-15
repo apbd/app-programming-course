@@ -11,7 +11,7 @@ def validate_num_of_servings(n):
         raise ValidationError('Number of servings must not be greater than 50.')
 
 
-class RecipeSchema(Schema):
+class BlogSchema(Schema):
     class Meta:
         ordered = True
 
@@ -42,8 +42,8 @@ class RecipeSchema(Schema):
         if value > 300:
             raise ValidationError('Cook time must not be greater than 300.')
 
-    def dump_cover_url(self, recipe):
-        if recipe.cover_image:
-            return url_for('static', filename='images/recipes/{}'.format(recipe.cover_image), _external=True)
+    def dump_cover_url(self, blog):
+        if blog.cover_image:
+            return url_for('static', filename='images/blogs/{}'.format(blog.cover_image), _external=True)
         else:
-            return url_for('static', filename='images/assets/default-recipe-cover.jpg', _external=True)
+            return url_for('static', filename='images/assets/default-blog-cover.jpg', _external=True)

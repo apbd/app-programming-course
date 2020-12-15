@@ -5,25 +5,25 @@ from flask_restful import Resource
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
 from http import HTTPStatus
 
-from models.blog import Recipe
-from schemas.blog import RecipeSchema
+from models.blog import Blog
+from schemas.blog import BlogSchema
 
 from extensions import image_set
 
 from utils import save_image
 
-recipe_schema = RecipeSchema()
-recipe_cover_schema = RecipeSchema(only=('cover_url', ))
-recipe_list_schema = RecipeSchema(many=True)
+blog_schema = BlogSchema()
+blog_cover_schema = BlogSchema(only=('cover_url', ))
+blog_list_schema = BlogSchema(many=True)
 
 
-class RecipeListResource(Resource):
+class BlogListResource(Resource):
 
     def get(self):
 
-        recipes = Recipe.get_all_published()
+        blogs = Blog.get_all_published()
 
-        return recipe_list_schema.dump(recipes).data, HTTPStatus.OK
+        return blog_list_schema.dump(blogs).data, HTTPStatus.OK
 
     @jwt_required
     def post(self):
@@ -32,126 +32,126 @@ class RecipeListResource(Resource):
 
         current_user = get_jwt_identity()
 
-        data, errors = recipe_schema.load(data=json_data)
+        data, errors = blog_schema.load(data=json_data)
 
         if errors:
             return {'message': 'Validation errors', 'errors': errors}, HTTPStatus.BAD_REQUEST
 
-        recipe = Recipe(**data)
-        recipe.user_id = current_user
-        recipe.save()
+        blog = Blog(**data)
+        blog.user_id = current_user
+        blog.save()
 
-        return recipe_schema.dump(recipe).data, HTTPStatus.CREATED
+        return blog_schema.dump(blog).data, HTTPStatus.CREATED
 
 
-class RecipeResource(Resource):
+class BlogResource(Resource):
 
     @jwt_optional
-    def get(self, recipe_id):
+    def get(self, blog_id):
 
-        recipe = Recipe.get_by_id(recipe_id=recipe_id)
+        blog = Blog.get_by_id(blog_id=blog_id)
 
-        if recipe is None:
-            return {'message': 'Recipe not found'}, HTTPStatus.NOT_FOUND
+        if blog is None:
+            return {'message': 'Blog not found'}, HTTPStatus.NOT_FOUND
 
         current_user = get_jwt_identity()
 
-        if recipe.is_publish == False and recipe.user_id != current_user:
+        if blog.is_publish == False and blog.user_id != current_user:
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
-        return recipe_schema.dump(recipe).data, HTTPStatus.OK
+        return blog_schema.dump(blog).data, HTTPStatus.OK
 
     @jwt_required
-    def patch(self, recipe_id):
+    def patch(self, blog_id):
 
         json_data = request.get_json()
 
-        data, errors = recipe_schema.load(data=json_data, partial=('name',))
+        data, errors = blog_schema.load(data=json_data, partial=('name',))
 
         if errors:
             return {'message': 'Validation errors', 'errors': errors}, HTTPStatus.BAD_REQUEST
 
-        recipe = Recipe.get_by_id(recipe_id=recipe_id)
+        blog = Blog.get_by_id(blog_id=blog_id)
 
-        if recipe is None:
-            return {'message': 'Recipe not found'}, HTTPStatus.NOT_FOUND
+        if blog is None:
+            return {'message': 'Blog not found'}, HTTPStatus.NOT_FOUND
 
         current_user = get_jwt_identity()
 
-        if current_user != recipe.user_id:
+        if current_user != blog.user_id:
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
-        recipe.name = data.get('name') or recipe.name
-        recipe.description = data.get('description') or recipe.description
-        recipe.num_of_servings = data.get('num_of_servings') or recipe.num_of_servings
-        recipe.cook_time = data.get('cook_time') or recipe.cook_time
-        recipe.directions = data.get('directions') or recipe.directions
+        blog.name = data.get('name') or blog.name
+        blog.description = data.get('description') or blog.description
+        blog.num_of_servings = data.get('num_of_servings') or blog.num_of_servings
+        blog.cook_time = data.get('cook_time') or blog.cook_time
+        blog.directions = data.get('directions') or blog.directions
 
-        recipe.save()
+        blog.save()
 
-        return recipe_schema.dump(recipe).data, HTTPStatus.OK
+        return blog_schema.dump(blog).data, HTTPStatus.OK
 
     @jwt_required
-    def delete(self, recipe_id):
+    def delete(self, blog_id):
 
-        recipe = Recipe.get_by_id(recipe_id=recipe_id)
+        blog = Blog.get_by_id(blog_id=blog_id)
 
-        if recipe is None:
-            return {'message': 'Recipe not found'}, HTTPStatus.NOT_FOUND
+        if blog is None:
+            return {'message': 'Blog not found'}, HTTPStatus.NOT_FOUND
 
         current_user = get_jwt_identity()
 
-        if current_user != recipe.user_id:
+        if current_user != blog.user_id:
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
-        recipe.delete()
+        blog.delete()
 
         return {}, HTTPStatus.NO_CONTENT
 
 
-class RecipePublishResource(Resource):
+class BlogPublishResource(Resource):
 
     @jwt_required
-    def put(self, recipe_id):
+    def put(self, blog_id):
 
-        recipe = Recipe.get_by_id(recipe_id=recipe_id)
+        blog = Blog.get_by_id(blog_id=blog_id)
 
-        if recipe is None:
-            return {'message': 'Recipe not found'}, HTTPStatus.NOT_FOUND
+        if blog is None:
+            return {'message': 'Blog not found'}, HTTPStatus.NOT_FOUND
 
         current_user = get_jwt_identity()
 
-        if current_user != recipe.user_id:
+        if current_user != blog.user_id:
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
-        recipe.is_publish = True
-        recipe.save()
+        blog.is_publish = True
+        blog.save()
 
         return {}, HTTPStatus.NO_CONTENT
 
     @jwt_required
-    def delete(self, recipe_id):
+    def delete(self, blog_id):
 
-        recipe = Recipe.get_by_id(recipe_id=recipe_id)
+        blog = Blog.get_by_id(blog_id=blog_id)
 
-        if recipe is None:
-            return {'message': 'Recipe not found'}, HTTPStatus.NOT_FOUND
+        if blog is None:
+            return {'message': 'Blog not found'}, HTTPStatus.NOT_FOUND
 
         current_user = get_jwt_identity()
 
-        if current_user != recipe.user_id:
+        if current_user != blog.user_id:
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
-        recipe.is_publish = False
-        recipe.save()
+        blog.is_publish = False
+        blog.save()
 
         return {}, HTTPStatus.NO_CONTENT
 
 
-class RecipeCoverUploadResource(Resource):
+class BlogCoverUploadResource(Resource):
 
     @jwt_required
-    def put(self, recipe_id):
+    def put(self, blog_id):
 
         file = request.files.get('cover')
 
@@ -161,24 +161,24 @@ class RecipeCoverUploadResource(Resource):
         if not image_set.file_allowed(file, file.filename):
             return {'message': 'File type not allowed'}, HTTPStatus.BAD_REQUEST
 
-        recipe = Recipe.get_by_id(recipe_id=recipe_id)
+        blog = Blog.get_by_id(blog_id=blog_id)
 
-        if recipe is None:
-            return {'message': 'Recipe not found'}, HTTPStatus.NOT_FOUND
+        if blog is None:
+            return {'message': 'Blog not found'}, HTTPStatus.NOT_FOUND
 
         current_user = get_jwt_identity()
 
-        if current_user != recipe.user_id:
+        if current_user != blog.user_id:
             return {'message': 'Access is not allowed'}, HTTPStatus.FORBIDDEN
 
-        if recipe.cover_image:
-            cover_path = image_set.path(folder='recipes', filename=recipe.cover_image)
+        if blog.cover_image:
+            cover_path = image_set.path(folder='blogs', filename=blog.cover_image)
             if os.path.exists(cover_path):
                 os.remove(cover_path)
 
-        filename = save_image(image=file, folder='recipes')
+        filename = save_image(image=file, folder='blogs')
 
-        recipe.cover_image = filename
-        recipe.save()
+        blog.cover_image = filename
+        blog.save()
 
-        return recipe_cover_schema.dump(recipe).data, HTTPStatus.OK
+        return blog_cover_schema.dump(blog).data, HTTPStatus.OK

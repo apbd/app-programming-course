@@ -1,8 +1,8 @@
 from extensions import db
 
 
-class Recipe(db.Model):
-    __tablename__ = 'recipe'
+class Blog(db.Model):
+    __tablename__ = 'blog'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -34,8 +34,8 @@ class Recipe(db.Model):
             return cls.query.filter_by(user_id=user_id).all()
 
     @classmethod
-    def get_by_id(cls, recipe_id):
-        return cls.query.filter_by(id=recipe_id).first()
+    def get_by_id(cls, blog_id):
+        return cls.query.filter_by(id=blog_id).first()
 
     def save(self):
         db.session.add(self)

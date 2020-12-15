@@ -10,11 +10,11 @@ from webargs.flaskparser import use_kwargs
 
 from extensions import image_set
 from mailgun import MailgunApi
-from models.blog import Recipe
+from models.blog import Blog
 from models.user import User
 
 from schemas.user import UserSchema
-from schemas.blog import RecipeSchema
+from schemas.blog import BlogSchema
 
 from utils import generate_token, verify_token, save_image
 
@@ -22,7 +22,7 @@ from utils import generate_token, verify_token, save_image
 user_schema = UserSchema()
 user_public_schema = UserSchema(exclude=('email', ))
 user_avatar_schema = UserSchema(only=('avatar_url', ))
-recipe_list_schema = RecipeSchema(many=True)
+blog_list_schema = BlogSchema(many=True)
 
 mailgun = MailgunApi(domain=os.environ.get('MAILGUN_DOMAIN'),
                      api_key=os.environ.get('MAILGUN_API_KEY'))
@@ -94,7 +94,7 @@ class MeResource(Resource):
         return user_schema.dump(user).data, HTTPStatus.OK
 
 
-class UserRecipeListResource(Resource):
+class UserBlogListResource(Resource):
 
     @jwt_optional
     @use_kwargs({'visibility': fields.Str(missing='public')})
@@ -112,9 +112,9 @@ class UserRecipeListResource(Resource):
         else:
             visibility = 'public'
 
-        recipes = Recipe.get_all_by_user(user_id=user.id, visibility=visibility)
+        blogs = Blog.get_all_by_user(user_id=user.id, visibility=visibility)
 
-        return recipe_list_schema.dump(recipes).data, HTTPStatus.OK
+        return blog_list_schema.dump(blogs).data, HTTPStatus.OK
 
 
 class UserActivateResource(Resource):
