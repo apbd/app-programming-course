@@ -34,8 +34,6 @@ class BlogSchema(Schema):
             return {'data': data}
         return data
 
-
-
     def dump_cover_url(self, blog):
         if blog.cover_image:
             return url_for('static', filename='images/blogs/{}'.format(blog.cover_image), _external=True)

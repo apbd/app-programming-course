@@ -12,4 +12,4 @@ itsdangerous==1.1.0
 Flask-Uploads==0.2.1
 Pillow==8.0.1
 Werkzeug==0.15.6
-connexion==1.5.3
+connexion==2.7.0

@@ -10,6 +10,7 @@ from extensions import db, jwt, image_set
 from resources.user import UserListResource, UserResource, MeResource, UserBlogListResource, UserActivateResource, UserAvatarUploadResource
 from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
 from resources.blog import BlogListResource, BlogResource, BlogPublishResource, BlogCoverUploadResource
+from resources.comment import CommentListResource, CommentResource
 
 
 def create_app():
@@ -56,6 +57,9 @@ def register_resources(app):
     api.add_resource(BlogResource, '/blogs/<int:blog_id>')
     api.add_resource(BlogPublishResource, '/blogs/<int:blog_id>/publish')
     api.add_resource(BlogCoverUploadResource, '/blogs/<int:blog_id>/cover')
+
+    api.add_resource(CommentListResource, '/blogs/<int:blog_id>/comments')
+    api.add_resource(CommentResource, '/blogs/<int:blog_id>/comments/<int:comment_id>')
 
 
 if __name__ == '__main__':
